@@ -54,7 +54,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 
 	if id == "" {
 		response := model.Response{
-			Message: "Id do produto não pode ser nulo",
+			Message: "Id do produto não pode ser nulo.",
 		}
 		ctx.JSON(http.StatusBadRequest, response)
 
@@ -65,7 +65,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 
 	if err != nil {
 		response := model.Response{
-			Message: "Id do produto precisa ser um número",
+			Message: "Id do produto precisa ser um número.",
 		}
 		ctx.JSON(http.StatusBadRequest, response)
 
@@ -82,7 +82,7 @@ func (p *productController) GetProductById(ctx *gin.Context) {
 
 	if product == nil {
 		response := model.Response{
-			Message: "Produto não encontrando no banco de dados",
+			Message: "Produto não encontrado no banco de dados.",
 		}
 		ctx.JSON(http.StatusNotFound, response)
 
@@ -97,7 +97,7 @@ func (p *productController) DeleteProduct(ctx *gin.Context) {
 
 	if id == "" {
 		response := model.Response{
-			Message: "Id do produto não pode ser nulo",
+			Message: "Id do produto não pode ser nulo.",
 		}
 
 		ctx.JSON(http.StatusBadRequest, response)
@@ -109,7 +109,7 @@ func (p *productController) DeleteProduct(ctx *gin.Context) {
 
 	if err != nil {
 		response := model.Response{
-			Message: "Id do produto precisa ser um número",
+			Message: "Id do produto precisa ser um número.",
 		}
 
 		ctx.JSON(http.StatusBadRequest, response)
@@ -127,7 +127,7 @@ func (p *productController) DeleteProduct(ctx *gin.Context) {
 
 	if product == nil {
 		response := model.Response{
-			Message: "Produto deletado com sucesso",
+			Message: "Produto deletado com sucesso.",
 		}
 		ctx.JSON(http.StatusOK, response)
 
