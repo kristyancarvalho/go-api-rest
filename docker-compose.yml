@@ -8,7 +8,9 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - go_db
+      go_db:
+        condition: service_healthy
+
   go_db:
     container_name: go_db
     image: postgres:12
@@ -17,9 +19,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 volumes:
   pgdata: {}
