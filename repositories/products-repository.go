@@ -22,7 +22,6 @@ func (pr *ProductRepository) GetProducts() ([]model.Product, error) {
 
 	if err != nil {
 		fmt.Println(err)
-
 		return []model.Product{}, err
 	}
 
@@ -38,7 +37,6 @@ func (pr *ProductRepository) GetProducts() ([]model.Product, error) {
 
 		if err != nil {
 			fmt.Println(err)
-
 			return []model.Product{}, err
 		}
 
@@ -102,31 +100,58 @@ func (pr *ProductRepository) GetProductById(id_product int) (*model.Product, err
 	return &product, nil
 }
 
-func (pr *ProductRepository) DeleteProduct(id_product int) (*model.Product, error) {
-	query, err := pr.connection.Prepare("DELETE FROM products WHERE id = $1")
+func (pr *ProductRepository) UpdateProduct(product model.Product) (*model.Product, error) {
+	query, err := pr.connection.Prepare("UPDATE products SET product_name = $1, price = $2 WHERE id = $3 RETURNING id, product_name, price")
 
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 
-	var product model.Product
+	var updatedProduct model.Product
 
-	err = query.QueryRow(id_product).Scan(
-		&product.ID,
-		&product.Name,
-		&product.Price,
+	err = query.QueryRow(product.Name, product.Price, product.ID).Scan(
+		&updatedProduct.ID,
+		&updatedProduct.Name,
+		&updatedProduct.Price,
 	)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-
+		fmt.Println(err)
 		return nil, err
 	}
 
 	query.Close()
 
-	return &product, nil
+	return &updatedProduct, nil
+}
+
+func (pr *ProductRepository) DeleteProduct(id_product int) (bool, error) {
+	query, err := pr.connection.Prepare("DELETE FROM products WHERE id = $1")
+
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	result, err := query.Exec(id_product)
+
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+
+	query.Close()
+
+	return rowsAffected > 0, nil
 }
